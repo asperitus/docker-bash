@@ -11,7 +11,11 @@ set -x
 [ -z "$http_proxy" ] && proxy="" || proxy="-e http_proxy=$http_proxy -e https_proxy=$http_proxy -e no_proxy=$no_proxy"
 
 #
+ipaddr=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
+
+xhost + $ipaddr
+
 export DHNT_BASE=~/.dhnt
-export DISPLAY=192.168.56.1:0
+export DISPLAY=${ipaddr}:0
 
 docker run --detach $proxy -v ${DHNT_BASE}:/home/vcap -e DISPLAY=${DISPLAY} -it --rm --privileged --name dhnt-bash-$$ dhnt/bash
